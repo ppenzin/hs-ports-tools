@@ -6,15 +6,20 @@ import System.Process
 import System.Exit
 import Control.Exception
 
+{-| Run something and check if the exit code is "success"
+ -}
+checkExitCode :: String -> [String] -> IO Bool
+checkExitCode nm args = readProcessWithExitCode nm args "" >>= \(status, _, _) -> return (status == ExitSuccess)
+
 {-| Run portmaster --help and check exit status
  -}
 checkPortmaster :: IO Bool
-checkPortmaster = readProcessWithExitCode "portmaster" ["--help"] "" >>= \(status, _, _) -> return (status == ExitSuccess)
+checkPortmaster = checkExitCode "portmaster" ["--help"]
 
 {-| Run portupgrade --help and check exit status
  -}
 checkPortupgrade :: IO Bool
-checkPortupgrade = readProcessWithExitCode "portupgrade" ["--help"] "" >>= \(status, _, _) -> return (status == ExitSuccess)
+checkPortupgrade = checkExitCode "portupgrade" ["--help"]
 
 {-| Return false for any exceptions
  -}
