@@ -1,6 +1,6 @@
 {-| FreeBSD tools to manage ports
  -}
-module Config.FreeBSD.PortTools (isPortmasterPresent, isPortupgradePresent) where
+module Config.FreeBSD.PortTools (isPortmasterPresent, isPkgToolsPresent, isPkgNgPresent, isPkgPresent) where
 
 import System.Process
 import System.Exit
@@ -21,6 +21,16 @@ checkPortmaster = checkExitCode "portmaster" ["--help"]
 checkPortupgrade :: IO Bool
 checkPortupgrade = checkExitCode "portupgrade" ["--help"]
 
+{-| Run pkg help and check exit status
+ -}
+checkPkg :: IO Bool
+checkPkg = checkExitCode "pkg" ["help"]
+
+{-| Run pkg_version -h (pre-NG package solution) and check exit status
+ -}
+checkOldPkg :: IO Bool
+checkOldPkg = checkExitCode "pkg_version" ["-h"]
+
 {-| Return false for any exceptions
  -}
 handler :: SomeException -> IO Bool
@@ -31,9 +41,18 @@ handler _ = return False
 isPortmasterPresent :: IO Bool
 isPortmasterPresent = catch checkPortmaster handler
 
-{-| Check whether portupgrade is installed by simply looking if we can run the command
+{-| Check whether pkgtools is installed by simply looking if we can run portupgrade command
  -}
-isPortupgradePresent :: IO Bool
-isPortupgradePresent = catch checkPortupgrade handler
+isPkgToolsPresent :: IO Bool
+isPkgToolsPresent = catch checkPortupgrade handler
 
+{-| Check whether pkgNG is installed by simply looking if we can run pkg command
+ -}
+isPkgNgPresent :: IO Bool
+isPkgNgPresent = catch checkPkg handler
+
+{-| Check for pre-NG package manager
+ -}
+isPkgPresent :: IO Bool
+isPkgPresent = catch checkOldPkg handler
 
