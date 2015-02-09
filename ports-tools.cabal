@@ -23,7 +23,7 @@ data-files:
 Library
   hs-source-dirs:      src
   exposed-modules:     Config.FreeBSD.PortTools, Config.FreeBSD.Package
-  build-depends:       base<5, process, directory
+  build-depends:       base<5, process>=1.2, directory
 
 -- Test-suite test-all
 --   type:                exitcode-stdio-1.0
